@@ -1,3 +1,4 @@
+let jogarnovamente = true;
 let tentativas = 6;
 let listaDinamica= [];
 let palavraSecretaCategoria;
@@ -304,32 +305,49 @@ function mudarStyleLetra(tecla, condicao){
     }
 }
 
-function comparalistas(letra){
+function comparalistas(letra) {
     const pos = palavraSecretaSorteada.indexOf(letra)
-    if (pos<0){
+    if (pos < 0) {
         tentativas--;
         carregaImagemForca();
-        if (tentativas==0){
-            abreModal("OPS!", "NÃO FOI DESSA VEZ....A PALAVRA SECRETA ERA <br>"+palavraSecretaSorteada);
+        if (tentativas == 0) {
+            abreModal("OPS!", "NÃO FOI DESSA VEZ....A PALAVRA SECRETA ERA <br>" + palavraSecretaSorteada);
+            piscarBotaoJogaNovamente();
         }
-    }else{
-        mudarStyleLetra("tecla-"+letra,true);
-        for (let i =0;i<palavraSecretaSorteada.length;i++){
-            if (palavraSecretaSorteada[i]==letra){
-                listaDinamica[i]=letra;
+    } else {
+        mudarStyleLetra("tecla-" + letra, true);
+        for (let i = 0; i < palavraSecretaSorteada.length; i++) {
+            if (palavraSecretaSorteada[i] === letra) {
+                listaDinamica[i] = letra;
             }
         }
     }
-    let vitoria=true;
-    for (i =0;i<palavraSecretaSorteada.length;i++){
-        if (palavraSecretaSorteada[i] != listaDinamica[i]){
-            vitoria=false;
+    let vitoria = true;
+    for (i = 0; i < palavraSecretaSorteada.length; i++) {
+        if (palavraSecretaSorteada[i] !== listaDinamica[i]) {
+            vitoria = false;
         }
     }
-    if (vitoria == true){
+    if (vitoria == true) {
         abreModal("PARABÉNS!", "VOCÊ VENCEU...");
-        tentativas=0;
+        tentativas = 0;
+        piscarBotaoJogaNovamente();
     }
+}
+
+async function piscarBotaoJogaNovamente() {
+    while (jogarnovamente === true) {
+        document.getElementById("btn-reiniciar").style.background = "red";
+        document.getElementById("btn-reiniciar").style.scale = 1.6;
+        await atraso(500)
+        document.getElementById("btn-reiniciar").style.background = "yellow";
+        document.getElementById("btn-reiniciar").style.scale = 1.3;
+        await atraso(500)
+    }
+}
+
+async function atraso(tempo){
+    return new Promise(x => setTimeout(x,tempo))
 }
 
 function carregaImagemForca(){
@@ -371,5 +389,6 @@ function abreModal(titulo,mensagem){
 
 let bntReiniciar = document.querySelector("#btn-reiniciar")
 bntReiniciar.addEventListener("click",function (){
+    jogarnovamente = false;
     location.reload();
 });
